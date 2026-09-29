@@ -1,12 +1,225 @@
+<!--
+  main page HTML file for a website called "Aves".
+  keep colours soft white (#F1FAEE), graphite (#333232), and slate gray (#718F94), with a hint of coral (#EF8354) 
+  for accent elements. layout should be accessible and responsive, with compatibility across different devices.
+-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Aves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BJCree:wght@500;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+      --soft-white: #F1FAEE;
+      --graphite: #333232;
+      --slate: #718F94;
+      --coral: #EF8354;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--soft-white);
+      color: var(--graphite);
+      font-family: Calibri, "Trebuchet MS", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+
+    .skip {
+      position: absolute; left: 1rem; top: -4rem; z-index: 20;
+      background: var(--soft-white); color: var(--graphite);
+      padding: .5rem 1rem;
+    }
+    .skip:focus { top: 1rem; }
+
+    /* Top bar sits over the photo */
+    .topbar {
+      position: fixed; inset: 0 0 auto 0; z-index: 10;
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+      color: var(--soft-white);
+      background: linear-gradient(rgba(51,50,50,.7), rgba(51,50,50,0));
+    }
+    .brand { font-family: "BJCree", serif; font-size: 1.5rem; font-weight: 600; text-decoration: none; }
+    .topbar nav a { margin-left: 1.5rem; text-decoration: none; border-bottom: 2px solid transparent; padding-block: .25rem; }
+    .topbar nav a:hover { border-bottom-color: var(--coral); }
+
+    /* Hero: the photo stays put while the intro slides up over it */
+    .hero {
+      position: sticky; top: 0;
+      height: 100vh; height: 100svh;
+      overflow: hidden;
+      background: var(--slate);
+      color: var(--soft-white);
+    }
+    .hero img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: center;
+      will-change: transform;
+    }
+    @keyframes hero-drift {
+      from { transform: scale(1.04) translate3d(-.5%, 0, 0); }
+      to { transform: scale(1.1) translate3d(.5%, -1%, 0); }
+    }
+    @keyframes cue-bob {
+      0%, 100% { translate: 0 0; }
+      50% { translate: 0 .4rem; }
+    }
+    .motion-ready .hero img { animation: hero-drift 24s ease-in-out infinite alternate; }
+    .hero::after {           /* darkens the photo so the white text stays readable */
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(rgba(51,50,50,.15) 30%, rgba(51,50,50,.8));
+    }
+    .hero-text {
+      position: absolute; z-index: 2;
+      left: clamp(1.25rem, 4vw, 3rem); right: clamp(1.25rem, 4vw, 3rem);
+      bottom: 4.5rem;
+    }
+    .motion-ready .hero-text { animation: hero-enter 900ms cubic-bezier(.2, .7, .2, 1) both; }
+    @keyframes hero-enter {
+      from { opacity: 0; translate: 0 1.5rem; }
+      to { opacity: 1; translate: 0 0; }
+    }
+    h1 {
+      font-family: "BJCree", serif;
+      font-weight: 600;
+      font-size: clamp(4rem, 14vw, 9rem);
+      line-height: .95; margin: 0 0 .75rem;
+    }
+    .tagline { font-size: clamp(1.1rem, 2.5vw, 1.5rem); max-width: 40ch; margin: 0; }
+    .cue {
+      position: absolute; z-index: 2; left: 50%; bottom: 1.25rem;
+      transform: translateX(-50%);
+      color: var(--soft-white); text-decoration: none; font-size: .95rem;
+      border-bottom: 2px solid var(--coral);
+    }
+    .motion-ready .cue { animation: cue-bob 1.8s ease-in-out infinite; }
+    .photo-credit {
+      position: absolute; z-index: 2; right: clamp(1.25rem, 4vw, 3rem); bottom: 1.25rem;
+      margin: 0; padding: .3rem .55rem;
+      color: rgba(241, 250, 238, .78); background: rgba(51, 50, 50, .38);
+      border-radius: 3px;
+      font-size: .52rem; line-height: 1.4;
+      -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    }
+
+    /* Everything after the hero scrolls up over the photo */
+    .content { position: relative; z-index: 3; background: var(--soft-white); border-top: 6px solid var(--coral); }
+    .wrap { width: min(1100px, 100% - 2.5rem); margin-inline: auto; }
+
+    #intro { padding: 5rem 0; display: grid; grid-template-columns: 1fr 1.4fr; gap: 1.5rem; }
+    h2 { font-family: "BJCree", serif; font-weight: 500; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; margin: 0; }
+    #intro p { font-size: 1.15rem; max-width: 58ch; margin: 0 0 1.25rem; }
+
+    #birds { padding: 4rem 0; border-top: 2px solid var(--slate); }
+    #birds h2 { margin-bottom: 2rem; }
+    .birds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin: 0; padding: 0; list-style: none; }
+    .birds li { border-top: 4px solid var(--coral); padding-top: 1rem; }
+    .motion-ready .reveal {
+      opacity: 0;
+      translate: 0 1.25rem;
+      transition: opacity 700ms ease, translate 700ms cubic-bezier(.2, .7, .2, 1);
+    }
+    .motion-ready .reveal.is-visible { opacity: 1; translate: 0 0; }
+    .motion-ready .birds li:nth-child(2) { transition-delay: 120ms; }
+    .motion-ready .birds li:nth-child(3) { transition-delay: 240ms; }
+    .birds h3 { font-size: 1.4rem; margin: 0 0 .5rem; }
+    .birds p { margin: 0; max-width: 40ch; }
+
+    footer { padding: 1.5rem 0 2.5rem; border-top: 2px solid var(--slate); font-size: .95rem; }
+
+    @media (max-width: 760px) {
+      #intro { grid-template-columns: 1fr; gap: 1.5rem; padding: 3.5rem 0; }
+      .birds { grid-template-columns: 1fr; gap: 2rem; }
+      .topbar nav a { margin-left: 1rem; }
+      .photo-credit { bottom: 3.5rem; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .hero { position: relative; }
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
+  </style>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <p>This is the start of my website.</p>
+  <a class="skip" href="#intro">Skip to content</a>
+
+  <div class="topbar">
+    <a class="brand" href="#top">aves</a>
+    <nav aria-label="Main">
+      <a href="#intro">About me</a>
+      <a href="#birds">The birds</a>
+    </nav>
+  </div>
+
+  <header class="hero" id="top">
+    <img src="avocets.jpg" alt="A pair of avocets swimming together" onerror="this.style.display='none'">
+    <div class="hero-text" id="heroText">
+      <h1>aves</h1>
+      <p class="tagline">Jeju bird observatory from the balcony of a student</p>
+    </div>
+    <a class="cue" href="#intro">Scroll to read</a>
+    <p class="photo-credit"> Rajesh Balouria &copy;, 2026</p>
+  </header>
+
+  <main class="content">
+    <section id="intro" class="wrap">
+      <h2>who's the person behind this?</h2>
+      <div>
+        <p>i'm an amateur birdwatcher based in jeju, korea. i started birding to help me relax and take my mind off the adversity of everyday life.</p>
+        <p>once, my friend and i were taking a walk and there was a bird on the side of the road, breathing heavily and trying to fly away in vain. it was hit by a car. 
+          it back to my friend's house in my school bag, and we carefully transferred it to a cardboard box. we contacted the wildlife rescue center, and the bird was taken to the clinic. 
+          we were later informed that the bird passed away while preparing for surgery due to a broken coracoid bone. from that day, i desired to contribute to protecting and preserving birds from the anthropogenic threats 
+          such as habitat destruction, road collisions, and climate change. </p>
+        </p>
+      </div>
+    </section>
+
+
+    <footer class="wrap">Aves &copy; 2026</footer>
+  </main>
+
+  <script>
+    // Fade the hero text and ease the photo as you scroll down (skipped if motion is reduced)
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const text = document.getElementById("heroText");
+      const img = document.querySelector(".hero img");
+      const revealItems = document.querySelectorAll("#intro > *, #birds > h2, .birds li");
+      document.body.classList.add("motion-ready");
+      revealItems.forEach((item) => item.classList.add("reveal"));
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, currentObserver) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              currentObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        revealItems.forEach((item) => observer.observe(item));
+      } else {
+        revealItems.forEach((item) => item.classList.add("is-visible"));
+      }
+
+      const update = () => {
+        const p = Math.min(window.scrollY / window.innerHeight, 1);
+        text.style.opacity = 1 - p * 1.4;
+        img.style.objectPosition = "center " + (50 + p * 8) + "%";
+      };
+      window.addEventListener("scroll", update, { passive: true });
+      update();
+    }
+  </script>
 </body>
 </html>
+
