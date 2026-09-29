@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F1FAEE">
+  <title>Bird Dictionary | Aves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BJCree:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --soft-white: #F1FAEE;
+      --graphite: #333232;
+      --slate: #718F94;
+      --coral: #EF8354;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--soft-white);
+      color: var(--graphite);
+      font-family: Calibri, "Trebuchet MS", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+    .topbar {
+      position: absolute; inset: 0 0 auto; z-index: 3;
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+      color: var(--soft-white);
+      background: linear-gradient(rgba(51, 50, 50, .65), transparent);
+    }
+    .brand {
+      font-family: "BJCree", serif; font-size: 1.5rem; font-weight: 600;
+      text-decoration: none;
+    }
+    .topbar nav a {
+      margin-left: 1.5rem; padding-block: .25rem;
+      text-decoration: none; border-bottom: 2px solid transparent;
+    }
+    .topbar nav a:hover, .topbar nav a[aria-current="page"] { border-bottom-color: var(--coral); }
+    .hero {
+      position: relative; display: flex; align-items: end;
+      min-height: 350px; height: 48svh; max-height: 560px;
+      padding: 5rem max(1.25rem, calc((100% - 1100px) / 2)) 3.5rem;
+      overflow: hidden; color: var(--soft-white); background: var(--slate);
+    }
+    .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center 45%; }
+    .hero::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(90deg, rgba(51, 50, 50, .68), rgba(51, 50, 50, .08)), linear-gradient(0deg, rgba(51, 50, 50, .48), transparent 65%);
+    }
+    .hero-copy { position: relative; z-index: 1; }
+    h1, h2 { font-family: "BJCree", serif; font-weight: 500; }
+    h1 { max-width: 12ch; margin: 0; font-size: clamp(3rem, 8vw, 6rem); line-height: 1; }
+    .hero p { max-width: 48ch; margin: .75rem 0 0; font-size: 1.15rem; }
+    .photo-credit {
+      position: absolute; z-index: 1; right: 1rem; bottom: 1rem;
+      margin: 0; padding: .2rem .45rem; border-radius: 3px;
+      color: rgba(241, 250, 238, .78); background: rgba(51, 50, 50, .38);
+      font-size: .65rem;
+    }
+    main { width: min(1100px, calc(100% - 2.5rem)); margin-inline: auto; }
+    .directory { padding: 3rem 0 5rem; }
+    .directory-head {
+      display: flex; justify-content: space-between; align-items: end;
+      gap: 2rem; margin-bottom: 1.5rem;
+    }
+    h2 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+    .count { margin: .4rem 0 0; color: #536b6f; }
+    .search { width: min(100%, 340px); }
+    .search label { display: block; margin-bottom: .35rem; font-size: .9rem; font-weight: 600; }
+    .search input {
+      width: 100%; min-height: 46px; padding: .65rem .8rem;
+      border: 1px solid #718f94; border-radius: 3px;
+      background: #fff; color: var(--graphite); font: inherit;
+    }
+    .entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; margin: 0; padding: 0; list-style: none; }
+    .entry { min-height: 170px; padding: 1.1rem 0 1.25rem; border-top: 3px solid var(--coral); }
+    .entry h3 { margin: 0; font-size: 1.55rem; font-weight: 600; }
+    .entry .latin { margin: .1rem 0 .7rem; color: #536b6f; font-size: .95rem; font-style: italic; }
+    .entry p:last-child { max-width: 55ch; margin: 0; }
+    .empty { grid-column: 1 / -1; padding: 1rem 0; border-top: 1px solid var(--slate); }
+    footer { padding: 1.25rem 0 2rem; border-top: 2px solid var(--slate); font-size: .9rem; }
+    @media (max-width: 650px) {
+      .topbar nav a { margin-left: .75rem; }
+      .hero { min-height: 380px; height: 58svh; padding-bottom: 4.5rem; }
+      .directory-head { align-items: stretch; flex-direction: column; gap: 1rem; }
+      .search { width: 100%; }
+      .entries { grid-template-columns: 1fr; }
+      .entry { min-height: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <img src="assets/img/2cormorants.jpg" alt="A group of cormorants perched on a rock in the waters of jeju" onerror="this.style.display='none'">
+    <div class="topbar">
+      <a class="brand" href="index.html">aves</a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">About me</a>
+        <a href="birds.html" aria-current="page">Bird dictionary</a>
+      </nav>
+    </div>
+    <div class="hero-copy">
+      <h1>birds of jeju</h1>
+      <p>A field guide to the birds you might meet along the island's shores and wetlands.</p>
+    </div>
+    <p class="photo-credit">Photo by 오승목, 2023</p>
+  </header>
+
+  <main>
+    <section class="directory" aria-labelledby="directory-title">
+      <div class="directory-head">
+        <div>
+          <h2 id="directory-title">bird dictionary</h2>
+          <p class="count" id="result-count" aria-live="polite">5 birds</p>
+        </div>
+        <div class="search">
+          <label for="bird-search">Find a bird</label>
+          <input id="bird-search" type="search" placeholder="Search name or description">
+        </div>
+      </div>
+      <ul class="entries" id="bird-list">
+        <li class="entry" data-search="avocet shorebird coastal wetlands long upturned bill shallow water">
+          <h3>avocet</h3>
+          <p class="latin">Recurvirostra avosetta</p>
+          <p>A long-legged shorebird that sweeps its fine, upturned bill through shallow water to find small prey.</p>
+        </li>
+        <li class="entry" data-search="heron wading bird wetland shallows fish long legs bill">
+          <h3>heron</h3>
+          <p class="latin">Ardeidae</p>
+          <p>A patient wader often seen standing still at the water's edge before striking quickly at fish.</p>
+        </li>
+        <li class="entry" data-search="cormorant seabird coastal diving fish wings dry">
+          <h3>cormorant</h3>
+          <p class="latin">Phalacrocoracidae</p>
+          <p>A skilled diving fish-hunter, often seen perched by the water with its wings spread to dry.</p>
+        </li>
+        <li class="entry" data-search="tern seabird coast hover plunge small fish">
+          <h3>tern</h3>
+          <p class="latin">Sterninae</p>
+          <p>A light-bodied seabird that hovers over the water before plunging in for small fish.</p>
+        </li>
+        <li class="entry" data-search="egret wader wetlands white bird fish shallow water">
+          <h3>egret</h3>
+          <p class="latin">Ardeidae</p>
+          <p>A graceful white wader that feeds in shallow water, taking small fish and other aquatic prey.</p>
+        </li>
+        <li class="empty" id="no-results" hidden>No birds added so far match that search. Try another name or description.</li>
+      </ul>
+    </section>
+    <footer>Aves &copy; 2026</footer>
+  </main>
+
+  <script>
+    const search = document.getElementById("bird-search");
+    const entries = [...document.querySelectorAll(".entry")];
+    const count = document.getElementById("result-count");
+    const empty = document.getElementById("no-results");
+
+    search.addEventListener("input", () => {
+      const query = search.value.trim().toLowerCase();
+      let visibleCount = 0;
+
+      entries.forEach((entry) => {
+        const matches = entry.dataset.search.includes(query);
+        entry.hidden = !matches;
+        if (matches) visibleCount += 1;
+      });
+
+      count.textContent = `${visibleCount} ${visibleCount === 1 ? "bird" : "birds"}`;
+      empty.hidden = visibleCount !== 0;
+    });
+  </script>
+</body>
+</html>
