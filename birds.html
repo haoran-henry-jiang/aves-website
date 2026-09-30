@@ -78,10 +78,38 @@
       background: #fff; color: var(--graphite); font: inherit;
     }
     .entries { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; margin: 0; padding: 0; list-style: none; }
-    .entry { min-height: 170px; padding: 1.1rem 0 1.25rem; border-top: 3px solid var(--coral); }
-    .entry h3 { margin: 0; font-size: 1.55rem; font-weight: 600; }
-    .entry .latin { margin: .1rem 0 .7rem; color: #536b6f; font-size: .95rem; font-style: italic; }
-    .entry p:last-child { max-width: 55ch; margin: 0; }
+    .entry {
+      position: relative; isolation: isolate; min-height: 230px;
+      overflow: hidden; color: var(--soft-white); background: var(--slate);
+    }
+    .entry::after {
+      content: ""; position: absolute; z-index: -1; inset: 0;
+      background: linear-gradient(135deg, rgba(51, 50, 50, .66), rgba(51, 50, 50, .32));
+      transition: background 350ms ease;
+    }
+    .entry-photo {
+      position: absolute; z-index: -2; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; opacity: 0; filter: blur(11px) saturate(.75);
+      transform: scale(1.08); transition: transform 450ms ease, opacity 250ms ease;
+    }
+    .entry.has-photo .entry-photo { opacity: 1; }
+    .entry-link {
+      position: relative; z-index: 1; display: flex; min-height: 230px;
+      flex-direction: column; justify-content: space-between; gap: 1rem;
+      padding: 1.1rem; color: inherit; text-decoration: none;
+    }
+    .entry-link:focus-visible { outline-offset: -5px; }
+    .entry-placeholder {
+      position: absolute; z-index: 1; right: 1.1rem; bottom: .35rem;
+      color: rgba(241, 250, 238, .74); font-size: .68rem; pointer-events: none;
+    }
+    .entry.has-photo .entry-placeholder { display: none; }
+    .entry:hover .entry-photo, .entry:focus-within .entry-photo, .entry.is-revealed .entry-photo { filter: blur(0) saturate(1); transform: scale(1); }
+    .entry:hover::after, .entry:focus-within::after, .entry.is-revealed::after { background: linear-gradient(135deg, rgba(51, 50, 50, .42), rgba(51, 50, 50, .12)); }
+    .entry-title h3 { margin: 0; font-size: 1.55rem; font-weight: 600; }
+    .entry-title .latin { margin: .1rem 0 0; color: rgba(241, 250, 238, .88); font-size: .95rem; font-style: italic; }
+    .entry-tags { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .35rem; margin-left: auto; }
+    .entry-tags span { color: rgba(241, 250, 238, .94); font-size: .85rem; font-style: italic; text-align: right; text-shadow: 0 1px 4px rgba(51, 50, 50, .7); }
     .empty { grid-column: 1 / -1; padding: 1rem 0; border-top: 1px solid var(--slate); }
     footer { padding: 1.25rem 0 2rem; border-top: 2px solid var(--slate); font-size: .9rem; }
     @media (max-width: 650px) {
@@ -90,7 +118,10 @@
       .directory-head { align-items: stretch; flex-direction: column; gap: 1rem; }
       .search { width: 100%; }
       .entries { grid-template-columns: 1fr; }
-      .entry { min-height: auto; }
+      .entry, .entry-link { min-height: 210px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .entry-photo, .entry::after, .entry-definition { transition-duration: .01ms; }
     }
   </style>
 </head>
@@ -124,30 +155,35 @@
         </div>
       </div>
       <ul class="entries" id="bird-list">
-        <li class="entry" data-search="avocet shorebird coastal wetlands long upturned bill shallow water">
-          <h3>avocet</h3>
-          <p class="latin">Recurvirostra avosetta</p>
-          <p>A long-legged shorebird that sweeps its fine, upturned bill through shallow water to find small prey.</p>
+        <li class="entry" data-search="avocet shorebird coastal wetlands long upturned bill shallow water" data-tags="shorebird,wader">
+          <a class="entry-link" href="bird.html?bird=avocet">
+            <div class="entry-title"><h3>avocet</h3><p class="latin">Recurvirostra avosetta</p></div>
+            <div class="entry-tags" aria-label="Bird tags"><span>shorebird</span><span>wader</span></div>
+          </a>
         </li>
-        <li class="entry" data-search="heron wading bird wetland shallows fish long legs bill">
-          <h3>heron</h3>
-          <p class="latin">Ardeidae</p>
-          <p>A patient wader often seen standing still at the water's edge before striking quickly at fish.</p>
+        <li class="entry" data-search="heron wader wading bird wetland shallows fish long legs bill" data-tags="waterbird,wader">
+          <a class="entry-link" href="bird.html?bird=heron">
+            <div class="entry-title"><h3>heron</h3><p class="latin">Ardeidae</p></div>
+            <div class="entry-tags" aria-label="Bird tags"><span>waterbird</span><span>wader</span></div>
+          </a>
         </li>
-        <li class="entry" data-search="cormorant seabird coastal diving fish wings dry">
-          <h3>cormorant</h3>
-          <p class="latin">Phalacrocoracidae</p>
-          <p>A skilled diving fish-hunter, often seen perched by the water with its wings spread to dry.</p>
+        <li class="entry" data-search="cormorant seabird coastal diving fish wings dry" data-tags="seabird,diver">
+          <a class="entry-link" href="bird.html?bird=cormorant">
+            <div class="entry-title"><h3>cormorant</h3><p class="latin">Phalacrocoracidae</p></div>
+            <div class="entry-tags" aria-label="Bird tags"><span>seabird</span><span>diver</span></div>
+          </a>
         </li>
-        <li class="entry" data-search="tern seabird coast hover plunge small fish">
-          <h3>tern</h3>
-          <p class="latin">Sterninae</p>
-          <p>A light-bodied seabird that hovers over the water before plunging in for small fish.</p>
+        <li class="entry" data-search="tern seabird coast hover plunge small fish" data-tags="seabird,coastal">
+          <a class="entry-link" href="bird.html?bird=tern">
+            <div class="entry-title"><h3>tern</h3><p class="latin">Sterninae</p></div>
+            <div class="entry-tags" aria-label="Bird tags"><span>seabird</span><span>coastal</span></div>
+          </a>
         </li>
-        <li class="entry" data-search="egret wader wetlands white bird fish shallow water">
-          <h3>egret</h3>
-          <p class="latin">Ardeidae</p>
-          <p>A graceful white wader that feeds in shallow water, taking small fish and other aquatic prey.</p>
+        <li class="entry" data-search="egret wader wetlands white bird fish shallow water" data-tags="waterbird,wader">
+          <a class="entry-link" href="bird.html?bird=egret">
+            <div class="entry-title"><h3>egret</h3><p class="latin">Ardeidae</p></div>
+            <div class="entry-tags" aria-label="Bird tags"><span>waterbird</span><span>wader</span></div>
+          </a>
         </li>
         <li class="empty" id="no-results" hidden>No birds added so far match that search. Try another name or description.</li>
       </ul>
@@ -156,12 +192,96 @@
   </main>
 
   <script>
+    // Paste your Apps Script web app URL (ends in /exec) between the quotes.
+    // Until you do, or if the request fails, the five birds above stay on the page.
+    const API = "https://script.google.com/macros/s/AKfycbyA_y15KSXknYmJyD8NDQ0saOoCLEcHHI8toN9n9gFl1mjm1gQgc0feQM__s5cYJiEK/exec";
+
+    const list = document.getElementById("bird-list");
     const search = document.getElementById("bird-search");
-    const entries = [...document.querySelectorAll(".entry")];
     const count = document.getElementById("result-count");
     const empty = document.getElementById("no-results");
+    let entries = [...document.querySelectorAll(".entry")];
+    const defaultPhotos = new Map([
+      ["avocet", "assets/img/avocets.jpg"],
+      ["cormorant", "assets/img/cormorants.jpg"]
+    ]);
+    const defaultTags = new Map([
+      ["avocet", ["shorebird", "wader"]],
+      ["heron", ["waterbird", "wader"]],
+      ["cormorant", ["seabird", "diver"]],
+      ["tern", ["seabird", "coastal"]],
+      ["egret", ["waterbird", "wader"]]
+    ]);
 
-    search.addEventListener("input", () => {
+    function photoKey(name) {
+      return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+    }
+
+    function birdTags(bird) {
+      const supplied = bird.tags ?? bird.category ?? bird.habitat ?? bird.type;
+      if (supplied) {
+        return (Array.isArray(supplied) ? supplied : String(supplied).split(/[;,|]/))
+          .map((tag) => String(tag).trim().toLowerCase()).filter(Boolean).slice(0, 3);
+      }
+
+      const keywords = String(bird.keywords ?? "").toLowerCase();
+      const tagRules = [
+        ["waterfowl", /waterfowl|duck|goose|swan/],
+        ["seabird", /seabird|sea bird|coastal|coast|marine/],
+        ["shorebird", /shorebird|shore bird|shore|mudflat/],
+        ["wader", /wader|wetland|marsh|shallows|shallow water/],
+        ["raptor", /raptor|hawk|eagle|falcon|owl/]
+      ];
+      const inferred = tagRules.filter(([, pattern]) => pattern.test(keywords)).map(([tag]) => tag);
+      return inferred.length ? inferred.slice(0, 2) : defaultTags.get(photoKey(bird.name)) || ["bird"];
+    }
+
+    function prepareEntry(entry) {
+      if (entry.querySelector(".entry-photo")) return;
+
+      const name = entry.querySelector("h3").textContent.trim();
+      const key = photoKey(name);
+      const image = document.createElement("img");
+      const placeholder = document.createElement("span");
+      const sources = [entry.dataset.photo || `assets/img/birds/${key}.jpg`];
+      const legacyPhoto = defaultPhotos.get(key);
+      if (legacyPhoto) sources.push(legacyPhoto);
+      let sourceIndex = 0;
+
+      const link = entry.querySelector(".entry-link");
+      if (link) {
+        link.href = `bird.html?bird=${encodeURIComponent(key)}`;
+        link.addEventListener("pointerenter", () => entry.classList.add("is-revealed"));
+        link.addEventListener("pointerleave", () => entry.classList.remove("is-revealed"));
+        link.addEventListener("focus", () => entry.classList.add("is-revealed"));
+        link.addEventListener("blur", () => entry.classList.remove("is-revealed"));
+      }
+
+      image.className = "entry-photo";
+      image.alt = "";
+      image.setAttribute("aria-hidden", "true");
+      image.addEventListener("load", () => entry.classList.add("has-photo"));
+      image.addEventListener("error", () => {
+        sourceIndex += 1;
+        if (sourceIndex < sources.length) {
+          image.src = sources[sourceIndex];
+        } else {
+          image.removeAttribute("src");
+          entry.classList.remove("has-photo");
+        }
+      });
+
+      placeholder.className = "entry-placeholder";
+      placeholder.textContent = "photo pending";
+
+      entry.prepend(image, placeholder);
+      image.src = sources[sourceIndex];
+    }
+
+    entries.forEach(prepareEntry);
+
+    function applyFilter() {
       const query = search.value.trim().toLowerCase();
       let visibleCount = 0;
 
@@ -173,7 +293,59 @@
 
       count.textContent = `${visibleCount} ${visibleCount === 1 ? "bird" : "birds"}`;
       empty.hidden = visibleCount !== 0;
-    });
+    }
+
+    search.addEventListener("input", applyFilter);
+
+    // Build one list item from a spreadsheet row, matching the markup above.
+    function makeEntry(bird) {
+      const text = (value) => String(value ?? "").trim();
+      const item = document.createElement("li");
+      const name = document.createElement("h3");
+      const latin = document.createElement("p");
+      const link = document.createElement("a");
+      const title = document.createElement("div");
+      const tags = document.createElement("div");
+      const tagValues = birdTags(bird);
+
+      item.className = "entry";
+      item.dataset.search = [bird.name, bird.scientific, bird.description, bird.keywords]
+        .map(text).join(" ").toLowerCase();
+      if (bird.photo) item.dataset.photo = text(bird.photo);
+      item.dataset.tags = tagValues.join(",");
+      name.textContent = text(bird.name);
+      latin.className = "latin";
+      latin.textContent = text(bird.scientific);
+      title.className = "entry-title";
+      title.append(name, latin);
+      tags.className = "entry-tags";
+      tags.setAttribute("aria-label", "Bird tags");
+      tagValues.forEach((tag) => {
+        const tagLabel = document.createElement("span");
+        tagLabel.textContent = tag.toLowerCase();
+        tags.append(tagLabel);
+      });
+      link.className = "entry-link";
+      link.append(title, tags);
+      item.append(link);
+      prepareEntry(item);
+      return item;
+    }
+
+    if (!API.startsWith("PASTE")) {
+      fetch(API)
+        .then((res) => res.json())
+        .then((birds) => {
+          if (!Array.isArray(birds) || birds.length === 0) return;
+
+          const items = birds.filter((b) => b.name).map(makeEntry);
+          list.querySelectorAll(".entry").forEach((entry) => entry.remove());
+          list.prepend(...items);   // keeps the "no results" message at the end
+          entries = items;
+          applyFilter();
+        })
+        .catch(() => { /* keep the built-in list */ });
+    }
   </script>
 </body>
 </html>

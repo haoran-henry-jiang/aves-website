@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F1FAEE">
+  <title>Bird | Aves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BJCree:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --soft-white: #F1FAEE;
+      --graphite: #333232;
+      --slate: #718F94;
+      --coral: #EF8354;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--soft-white); color: var(--graphite);
+      font-family: Calibri, "Trebuchet MS", sans-serif; line-height: 1.6;
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+    .topbar {
+      position: absolute; inset: 0 0 auto; z-index: 2;
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+      color: var(--soft-white); background: linear-gradient(rgba(51, 50, 50, .62), transparent);
+    }
+    .brand { font-family: "BJCree", serif; font-size: 1.5rem; font-weight: 600; text-decoration: none; }
+    .topbar nav a { margin-left: 1.5rem; padding-block: .25rem; text-decoration: none; border-bottom: 2px solid transparent; }
+    .topbar nav a:hover { border-bottom-color: var(--coral); }
+    .bird-hero {
+      position: relative; display: flex; align-items: end; min-height: 360px; height: 55svh; max-height: 620px;
+      padding: 6rem max(1.25rem, calc((100% - 1100px) / 2)) 3rem;
+      overflow: hidden; color: var(--soft-white); background: var(--slate);
+    }
+    .bird-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+    .bird-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(51, 50, 50, .64), rgba(51, 50, 50, .06)), linear-gradient(0deg, rgba(51, 50, 50, .54), transparent 70%); }
+    .bird-heading { position: relative; z-index: 1; }
+    h1, h2 { font-family: "BJCree", serif; font-weight: 500; }
+    h1 { margin: 0; font-size: clamp(3rem, 8vw, 6rem); line-height: 1; }
+    .scientific { margin: .55rem 0 0; color: rgba(241, 250, 238, .9); font-size: 1.15rem; font-style: italic; }
+    .tags { position: absolute; z-index: 1; right: 1.25rem; bottom: 1rem; display: flex; flex-wrap: wrap; justify-content: end; gap: .5rem; }
+    .tags span { font-size: .9rem; font-style: italic; text-shadow: 0 1px 5px rgba(51, 50, 50, .75); }
+    main { width: min(760px, calc(100% - 2.5rem)); margin: 0 auto; }
+    .detail { padding: 3.5rem 0 5rem; }
+    h2 { margin: 0 0 1rem; font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.15; }
+    .description { max-width: 65ch; margin: 0; font-size: 1.2rem; }
+    .back-link { display: inline-flex; margin-top: 2rem; color: #465f63; text-decoration-color: var(--coral); text-underline-offset: .25em; }
+    .message { padding: 4rem 0; }
+    footer { padding: 1.25rem 0 2rem; border-top: 2px solid var(--slate); font-size: .9rem; }
+    @media (max-width: 650px) {
+      .topbar nav a { margin-left: .75rem; }
+      .bird-hero { min-height: 420px; height: 62svh; padding-bottom: 4rem; }
+      .detail { padding-top: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="bird-hero">
+    <img class="bird-photo" src="" alt="">
+    <div class="topbar">
+      <a class="brand" href="index.html">aves</a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">About me</a>
+        <a href="birds.html">Bird dictionary</a>
+      </nav>
+    </div>
+    <div class="bird-heading">
+      <h1 id="bird-name">bird</h1>
+      <p class="scientific" id="bird-scientific"></p>
+    </div>
+    <div class="tags" id="bird-tags" aria-label="Bird tags"></div>
+  </header>
+  <main>
+    <article class="detail" aria-labelledby="description-heading">
+      <h2 id="description-heading">about this bird</h2>
+      <p class="description" id="bird-description"></p>
+      <a class="back-link" href="birds.html">Back to the bird dictionary</a>
+    </article>
+    <footer>Aves &copy; 2026</footer>
+  </main>
+  <script>
+    const API = "https://script.google.com/macros/s/AKfycbyA_y15KSXknYmJyD8NDQ0saOoCLEcHHI8toN9n9gFl1mjm1gQgc0feQM__s5cYJiEK/exec";
+    const slug = new URLSearchParams(location.search).get("bird") || "";
+    const normalize = (value) => String(value ?? "").normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
+    const fallback = {
+      avocet: {
+        name: "avocet", scientific: "Recurvirostra avosetta",
+        description: "A long-legged shorebird that sweeps its fine, upturned bill through shallow water to find small prey.",
+        tags: ["shorebird", "wader"]
+      },
+      heron: {
+        name: "heron", scientific: "Ardeidae",
+        description: "A patient wader often seen standing still at the water's edge before striking quickly at fish.",
+        tags: ["waterbird", "wader"]
+      },
+      cormorant: {
+        name: "cormorant", scientific: "Phalacrocoracidae",
+        description: "A skilled diving fish-hunter, often seen perched by the water with its wings spread to dry.",
+        tags: ["seabird", "diver"]
+      },
+      tern: {
+        name: "tern", scientific: "Sterninae",
+        description: "A light-bodied seabird that hovers over the water before plunging in for small fish.",
+        tags: ["seabird", "coastal"]
+      },
+      egret: {
+        name: "egret", scientific: "Ardeidae",
+        description: "A graceful white wader that feeds in shallow water, taking small fish and other aquatic prey.",
+        tags: ["waterbird", "wader"]
+      }
+    };
+    const defaultPhotos = {
+      avocet: "assets/img/avocets.jpg",
+      cormorant: "assets/img/cormorants.jpg"
+    };
+    const nameNode = document.getElementById("bird-name");
+    const scientificNode = document.getElementById("bird-scientific");
+    const descriptionNode = document.getElementById("bird-description");
+    const photoNode = document.querySelector(".bird-photo");
+    const tagsNode = document.getElementById("bird-tags");
+
+    function renderBird(bird) {
+      if (!bird) return;
+      const name = String(bird.name || "bird").trim();
+      const key = normalize(name);
+      nameNode.textContent = name.toLowerCase();
+      scientificNode.textContent = String(bird.scientific || "").trim();
+      descriptionNode.textContent = String(bird.description || "Description coming soon.").trim();
+      document.title = `${name} | Aves`;
+      const tags = bird.tags ?? bird.category ?? bird.habitat ?? bird.type ?? fallback[key]?.tags ?? [];
+      const tagValues = Array.isArray(tags) ? tags : String(tags).split(/[;,|]/);
+      tagsNode.replaceChildren(...tagValues.filter(Boolean).slice(0, 3).map((tag) => {
+        const node = document.createElement("span");
+        node.textContent = String(tag).trim().toLowerCase();
+        return node;
+      }));
+      photoNode.alt = `${name} photo`;
+      photoNode.src = bird.photo || defaultPhotos[key] || `assets/img/birds/${key}.jpg`;
+      photoNode.onerror = () => {
+        if (defaultPhotos[key] && photoNode.src.endsWith(`/${key}.jpg`)) {
+          photoNode.src = defaultPhotos[key];
+          return;
+        }
+        photoNode.removeAttribute("src");
+      };
+    }
+
+    const localBird = fallback[normalize(slug)];
+    if (localBird) renderBird(localBird);
+    else if (!slug) {
+      nameNode.textContent = "bird not found";
+      descriptionNode.textContent = "Choose a bird from the dictionary to view its details.";
+    }
+
+    fetch(API)
+      .then((response) => {
+        if (!response.ok) throw new Error("Bird data could not be loaded");
+        return response.json();
+      })
+      .then((birds) => {
+        if (!Array.isArray(birds)) return;
+        const bird = birds.find((item) => normalize(item.name) === normalize(slug));
+        if (bird) renderBird({ ...localBird, ...bird });
+        else if (!localBird) {
+          nameNode.textContent = "bird not found";
+          descriptionNode.textContent = "This bird is not in the dictionary yet.";
+        }
+      })
+      .catch(() => {
+        if (!localBird) {
+          nameNode.textContent = "bird not found";
+          descriptionNode.textContent = "Bird details could not be loaded right now.";
+        }
+      });
+  </script>
+</body>
+</html>
