@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#20292a">
+  <title>Development | Aves</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=BJCree:wght@500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --soft-white: #edf3ea;
+      --graphite: #20292a;
+      --slate: #9bb4b5;
+      --coral: #ef8354;
+      --panel: #293637;
+      --muted: #c0ceca;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--graphite);
+      color: var(--soft-white);
+      font-family: Calibri, "Trebuchet MS", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: inherit; }
+    :focus-visible { outline: 3px solid var(--coral); outline-offset: 3px; }
+    .topbar {
+      position: absolute; inset: 0 0 auto; z-index: 2;
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 1.25rem clamp(1.25rem, 4vw, 3rem);
+      color: var(--soft-white);
+      background: linear-gradient(rgba(20, 27, 28, .78), transparent);
+    }
+    .brand {
+      font-family: "BJCree", serif; font-size: 1.5rem; font-weight: 600;
+      text-decoration: none;
+    }
+    .topbar nav a {
+      margin-left: 1.5rem; padding-block: .25rem;
+      text-decoration: none; border-bottom: 2px solid transparent;
+    }
+    .topbar nav a:hover, .topbar nav a[aria-current="page"] { border-bottom-color: var(--coral); }
+    .hero {
+      position: relative; display: flex; align-items: end;
+      height: 100vh; height: 100svh;
+      padding: 5rem clamp(1.25rem, 4vw, 3rem) 5.5rem;
+      overflow: hidden; color: var(--soft-white); background: var(--graphite);
+    }
+    .hero img {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      object-fit: cover; object-position: center 45%;
+      -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+      mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+    }
+    .hero::after {
+      content: ""; position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(20, 27, 28, .42), rgba(20, 27, 28, .3) 55%, var(--graphite) 100%);
+    }
+    .hero-copy { position: relative; z-index: 1; }
+    h1, h2, h3 { font-family: "BJCree", serif; font-weight: 500; }
+    h1 {
+      position: relative; max-width: 12ch; margin: 0;
+      font-size: clamp(3rem, 8vw, 6rem); line-height: 1;
+      transform-origin: left center;
+      animation: timeline-wiggle 700ms ease-out both;
+    }
+    .timeline-glint {
+      position: absolute; inset: 0;
+      color: transparent;
+      background: linear-gradient(105deg, transparent 25%, rgba(239, 131, 84, .5) 36%, rgba(255, 224, 130, .55) 42%, rgba(175, 239, 192, .55) 48%, rgba(160, 211, 255, .55) 54%, rgba(216, 176, 255, .5) 60%, transparent 72%);
+      background-size: 250% 100%; background-position: 120% 0;
+      -webkit-background-clip: text; background-clip: text;
+      pointer-events: none;
+      animation: timeline-glint 1.5s ease-out .15s both;
+    }
+    @keyframes timeline-wiggle {
+      0%, 100% { rotate: 0deg; }
+      20% { rotate: -2deg; }
+      45% { rotate: 1.5deg; }
+      70% { rotate: -.75deg; }
+    }
+    @keyframes timeline-glint {
+      0% { background-position: 120% 0; opacity: 0; }
+      20% { opacity: .9; }
+      100% { background-position: -20% 0; opacity: 0; }
+    }
+    .hero p { max-width: 48ch; margin: .75rem 0 0; color: var(--muted); font-size: 1.15rem; }
+    .scroll-cue {
+      position: absolute; z-index: 1; left: 50%; bottom: 1.5rem;
+      transform: translateX(-50%); color: var(--soft-white);
+      text-decoration: none; border-bottom: 2px solid var(--coral);
+    }
+    main { width: min(900px, calc(100% - 2.5rem)); margin-inline: auto; }
+    main.content {
+      position: relative; z-index: 3; width: 100%; max-width: none;
+      padding-inline: max(1.25rem, calc((100% - 900px) / 2));
+      background: var(--graphite);
+    }
+    .development { padding: 3rem 0 5rem; }
+    h2 { margin: 0; font-size: clamp(2rem, 5vw, 3rem); line-height: 1.1; }
+    .intro { max-width: 65ch; margin: .75rem 0 2rem; color: var(--muted); font-size: 1.1rem; }
+    .jump-links { display: flex; flex-wrap: wrap; gap: .75rem 1.5rem; margin: 0 0 3rem; padding: 0; list-style: none; }
+    .jump-links a { color: var(--soft-white); text-decoration-color: var(--coral); text-underline-offset: .25em; }
+    .timeline { position: relative; margin: 0; padding: 0 0 0 1.75rem; list-style: none; }
+    .timeline::before {
+      content: ""; position: absolute; top: .5rem; bottom: .5rem; left: .35rem;
+      width: 2px; background: linear-gradient(var(--coral), #718f94 90%);
+    }
+    .milestone {
+      position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, .6fr);
+      align-items: start; gap: 1.5rem; padding: 0 0 2.25rem 1rem; scroll-margin-top: 1.5rem;
+    }
+    .milestone:last-child { padding-bottom: 0; }
+    .milestone::before {
+      content: ""; position: absolute; top: .45rem; left: -1.75rem;
+      width: .85rem; height: .85rem; border: 3px solid var(--graphite);
+      border-radius: 50%; background: var(--coral); box-shadow: 0 0 0 1px var(--coral);
+    }
+    .timeline-photo {
+      display: flex; flex-direction: column; margin: 0;
+      border: 1px dashed #718f94; color: var(--muted);
+      background: rgba(41, 54, 55, .48); font-size: .85rem;
+    }
+    .timeline-photo > span {
+      display: grid; place-items: center; width: 100%; aspect-ratio: 4 / 3;
+    }
+    .timeline-photo img {
+      display: block; width: 100%; aspect-ratio: 4 / 3; object-fit: cover;
+    }
+    .timeline-photo figcaption { padding: .5rem .65rem; }
+    .milestone time { color: #f3a17e; font-size: .9rem; font-weight: 700; letter-spacing: .04em; }
+    .milestone h3 { margin: .2rem 0 .6rem; font-size: 1.6rem; }
+    .milestone p { max-width: 65ch; margin: .75rem 0 0; color: var(--muted); }
+
+    .milestone ul { margin: .6rem 0 0; padding-left: 1.25rem; color: var(--soft-white); }
+    .milestone li + li { margin-top: .5rem; }
+    .milestone a { color: #b8d8d8; text-decoration-color: var(--coral); text-underline-offset: .2em; }
+    .project-focus { margin-top: 1rem; padding-top: 2rem; border-top: 1px solid #526768; scroll-margin-top: 1.5rem; }
+    .project-focus h3 { margin: 0 0 .4rem; font-size: 1.6rem; }
+    .project-focus p { max-width: 65ch; margin: 0; color: var(--muted); }
+    footer { padding: 1.25rem 0 2rem; border-top: 2px solid #526768; color: var(--muted); font-size: .9rem; }
+    .motion-ready .scroll-reveal {
+      opacity: 0; translate: 0 1.25rem;
+      transition: opacity 700ms ease, translate 700ms cubic-bezier(.2, .7, .2, 1);
+    }
+    .motion-ready .scroll-reveal.is-visible { opacity: 1; translate: 0 0; }
+    @media (max-width: 650px) {
+      .topbar nav a { margin-left: .6rem; }
+      .hero { min-height: 100svh; padding-bottom: 5.5rem; }
+      .development { padding-top: 2.5rem; }
+      .jump-links { flex-direction: column; gap: .5rem; }
+      .milestone { grid-template-columns: 1fr; gap: .75rem; }
+      .timeline-photo { width: min(100%, 360px); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+        transition-duration: .01ms !important; scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <img src="assets/img/guitar.jpg" alt="expert guitar playing" onerror="this.style.display='none'">
+    <div class="topbar">
+      <a class="brand" href="index.html">aves</a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">About me</a>
+        <a href="birds.html">Bird dictionary</a>
+        <a href="development.html" aria-current="page">Development</a>
+      </nav>
+    </div>
+    <div class="hero-copy">
+      <h1>project timeline<span class="timeline-glint" aria-hidden="true">project timeline</span></h1>
+      <p> (in progress) logging the progress of the bird feeder project and accompanying photography!</p>
+    </div>
+    <a class="scroll-cue" href="#development-content">Scroll to explore</a>
+  </header>
+
+  <main class="content" id="development-content">
+    <section class="development" aria-label="Project development timeline">
+      <p class="intro scroll-reveal">Use the links below to jump straight to a project area.</p>
+      <nav aria-label="Jump to a project">
+        <ul class="jump-links scroll-reveal">
+          <li><a href="#feeder">Bird feeder</a></li>
+          <li><a href="#photography">Bird photography</a></li>
+        </ul>
+      </nav>
+
+      <ol class="timeline" aria-label="Bird feeder project progress">
+        <li class="milestone" id="feeder">
+          <div class="milestone-copy">
+            <time datetime="2026-08-30">30/08/26</time>
+            <h3>initial research, wiring</h3>
+            <ul>
+              <li>First had the idea to make my own bird feeder after staring at a bag of almonds and anchovies</li>
+              <li>Searching up components/ 3d printer design, to see how it works.</li>
+            </ul>
+          </div>
+          <figure class="timeline-photo" aria-label="Photo space for initial research and wiring"><span>Photo space</span></figure>
+        </li>
+        <li class="milestone">
+          <div class="milestone-copy">
+            <time datetime="2026-09-04">04/09/26</time>
+            <h3>prototype components</h3>
+            <ul>
+              <li>Asked Mr Scarlett for a Raspberry Pi 3, but it wasn't a match for the project.</li>
+              <li>Finalised the component list, see here:</li>
+            </ul>
+          </div>
+          <figure class="timeline-photo" aria-label="Photo space for prototype components"><span>Photo space</span></figure>
+        </li>
+        <li class="milestone">
+          <div class="milestone-copy">
+            <time datetime="2026-09-06">06/09/26</time>
+            <h3>choosing a battery</h3>
+            <ul>
+              <li>Considered sodium-ion versus lithium-ion batteries for the prototype and planned to ask Mr Ray for advice.</li>
+              <li>Decided to use lithium-ion for the prototype, with the possibility of creating a sodium-ion controller later.</li>
+            </ul>
+          </div>
+          <figure class="timeline-photo" aria-label="Photo space for battery planning"><span>Photo space</span></figure>
+        </li>
+        <li class="milestone">
+          <div class="milestone-copy">
+            <time datetime="2026-09-20">20/09/26</time>
+            <h3>hardware and servers</h3>
+            <ul>
+              <li>Hardware: Parts finally arrived! two components needed to share a 5V boost converter, and a breadboard was needed to test everything properly (which i didn't have). Planned to ask the CS department for a breadboard and jumper wires.</li>
+              <li>Software: Configured the ESP32 to display pictures on a local web server. It works really well, but the esp-32 is so freaking hot when it runs.</li>
+            </ul>
+          </div>
+          <figure class="timeline-photo" aria-label="Photo space for hardware and local image server testing"><span>Photo space</span></figure>
+        </li>
+        <li class="milestone">
+          <div class="milestone-copy">
+            <time datetime="2026-09-28">28/09/26</time>
+            <h3>adjustments and voltage</h3>
+            <ul>
+              <li>Software: Wrote ESP32 code to work with the PIR and DHT22 sensors and trigger on PIR detection. Claude helped me, and the code was based on <a href="https://randomnerdtutorials.com/esp32-cam-photo-microsd-card-timestamp/">this ESP32-CAM photo and timestamp tutorial</a>.</li>
+              <li>Hardware: Mr Ray and I soldered the TP4056 charge controller to the MT3068 step-up converter to provide stable 5V for the ESP32. I snapped off the solder connection when adjusting the output voltage (had to turn that tiny knob for ages), so I planned to meet with him again the next day. Gonna flash the ESP32 code in the meantime.</li>
+            </ul>
+          </div>
+          <figure class="timeline-photo">
+            <img src="https://drive.google.com/thumbnail?id=160oyuCCJSQdyQsi2K0fya3-iTxPb2cKt&amp;sz=`w1500" alt="breadboard circuitry!">
+            <figcaption>all of it on a glorious breadboard</figcaption>
+          </figure>
+        </li>
+        <li class="milestone" id="feeder">
+          <div class="milestone-copy">
+            <time datetime="2026-10-08">08/10/26</time>
+            <h3>breadboards and birds </h3>
+            <ul>
+              <li>Some exams coming up so progress has been slow. </li>
+              <li>Hardware: Used breadboard and circuitry works! Needed to resolder the charge converter for a better connection. 
+                Borrowed soldering iron and didn’t burn myself luckily. Circuitry worked and everything was powered! However there was an error with the led and the temperature sensor sharing the same pin. Will resolve.</li>
+              <li>Software: continued writing for the website that you’re on right now! Added development page and some more birds for the dictionary. </li>
+
+              </ul>
+          </div>
+          <figure class="timeline-photo">
+            <img src="https://drive.google.com/thumbnail?id=1jleAS7fpCWQSA7aXDIAhC-iWc1UObJ-6&amp;sz=w1500" alt="Soldering iron and power components during assembly">
+            <figcaption>learned how to solder yay</figcaption>
+          </figure>
+        </li>
+      </ol>
+
+      <section class="project-focus" id="photography" aria-labelledby="photography-heading">
+        <h3 id="photography-heading">Bird photography</h3>
+        <p>Building a visual record alongside the feeder project, documenting visiting birds, their behavior and the life around the feeder.</p>
+      </section>
+    </section>
+    <footer>Aves &copy; 2026</footer>
+  </main>
+  <script>
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      const revealItems = document.querySelectorAll(".milestone, .project-focus, footer");
+      document.body.classList.add("motion-ready");
+      revealItems.forEach((item) => item.classList.add("scroll-reveal"));
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, currentObserver) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              currentObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        document.querySelectorAll(".scroll-reveal").forEach((item) => observer.observe(item));
+      } else {
+        document.querySelectorAll(".scroll-reveal").forEach((item) => item.classList.add("is-visible"));
+      }
+    }
+  </script>
+</body>
+</html>

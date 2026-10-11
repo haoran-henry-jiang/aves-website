@@ -48,6 +48,8 @@
     .detail { padding: 3.5rem 0 5rem; }
     h2 { margin: 0 0 1rem; font-size: clamp(1.8rem, 4vw, 2.5rem); line-height: 1.15; }
     .description { max-width: 65ch; margin: 0; font-size: 1.2rem; }
+    .observations { margin-top: 2.5rem; padding-top: 2rem; border-top: 2px solid var(--slate); }
+    .observations p { max-width: 65ch; margin: 0; white-space: pre-line; }
     .back-link { display: inline-flex; margin-top: 2rem; color: #465f63; text-decoration-color: var(--coral); text-underline-offset: .25em; }
     .message { padding: 4rem 0; }
     footer { padding: 1.25rem 0 2rem; border-top: 2px solid var(--slate); font-size: .9rem; }
@@ -66,6 +68,7 @@
       <nav aria-label="Main navigation">
         <a href="index.html">About me</a>
         <a href="birds.html">Bird dictionary</a>
+        <a href="development.html">Development</a>
       </nav>
     </div>
     <div class="bird-heading">
@@ -78,6 +81,10 @@
     <article class="detail" aria-labelledby="description-heading">
       <h2 id="description-heading">about this bird</h2>
       <p class="description" id="bird-description"></p>
+      <section class="observations" aria-labelledby="observations-heading" hidden>
+        <h2 id="observations-heading">behavioral observations</h2>
+        <p id="bird-observations"></p>
+      </section>
       <a class="back-link" href="birds.html">Back to the bird dictionary</a>
     </article>
     <footer>Aves &copy; 2026</footer>
@@ -121,6 +128,8 @@
     const nameNode = document.getElementById("bird-name");
     const scientificNode = document.getElementById("bird-scientific");
     const descriptionNode = document.getElementById("bird-description");
+    const observationsSection = document.querySelector(".observations");
+    const observationsNode = document.getElementById("bird-observations");
     const photoNode = document.querySelector(".bird-photo");
     const tagsNode = document.getElementById("bird-tags");
 
@@ -131,6 +140,8 @@
       nameNode.textContent = name.toLowerCase();
       scientificNode.textContent = String(bird.scientific || "").trim();
       descriptionNode.textContent = String(bird.description || "Description coming soon.").trim();
+      observationsNode.textContent = String(bird.observations || "No behavioral observations recorded yet.").trim();
+      observationsSection.hidden = false;
       document.title = `${name} | Aves`;
       const tags = bird.tags ?? bird.category ?? bird.habitat ?? bird.type ?? fallback[key]?.tags ?? [];
       const tagValues = Array.isArray(tags) ? tags : String(tags).split(/[;,|]/);

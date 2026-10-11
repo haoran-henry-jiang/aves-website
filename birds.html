@@ -133,6 +133,7 @@
       <nav aria-label="Main navigation">
         <a href="index.html">About me</a>
         <a href="birds.html" aria-current="page">Bird dictionary</a>
+        <a href="development.html">Development</a>
       </nav>
     </div>
     <div class="hero-copy">
@@ -147,7 +148,7 @@
       <div class="directory-head">
         <div>
           <h2 id="directory-title">bird dictionary</h2>
-          <p class="count" id="result-count" aria-live="polite">5 birds</p>
+          <p class="count" id="result-count" aria-live="polite">1 bird</p>
         </div>
         <div class="search">
           <label for="bird-search">Find a bird</label>
@@ -155,34 +156,9 @@
         </div>
       </div>
       <ul class="entries" id="bird-list">
-        <li class="entry" data-search="avocet shorebird coastal wetlands long upturned bill shallow water" data-tags="shorebird,wader">
+        <li class="entry" data-search="avocet shorebird coastal wetlands long upturned bill shallow water">
           <a class="entry-link" href="bird.html?bird=avocet">
             <div class="entry-title"><h3>avocet</h3><p class="latin">Recurvirostra avosetta</p></div>
-            <div class="entry-tags" aria-label="Bird tags"><span>shorebird</span><span>wader</span></div>
-          </a>
-        </li>
-        <li class="entry" data-search="heron wader wading bird wetland shallows fish long legs bill" data-tags="waterbird,wader">
-          <a class="entry-link" href="bird.html?bird=heron">
-            <div class="entry-title"><h3>heron</h3><p class="latin">Ardeidae</p></div>
-            <div class="entry-tags" aria-label="Bird tags"><span>waterbird</span><span>wader</span></div>
-          </a>
-        </li>
-        <li class="entry" data-search="cormorant seabird coastal diving fish wings dry" data-tags="seabird,diver">
-          <a class="entry-link" href="bird.html?bird=cormorant">
-            <div class="entry-title"><h3>cormorant</h3><p class="latin">Phalacrocoracidae</p></div>
-            <div class="entry-tags" aria-label="Bird tags"><span>seabird</span><span>diver</span></div>
-          </a>
-        </li>
-        <li class="entry" data-search="tern seabird coast hover plunge small fish" data-tags="seabird,coastal">
-          <a class="entry-link" href="bird.html?bird=tern">
-            <div class="entry-title"><h3>tern</h3><p class="latin">Sterninae</p></div>
-            <div class="entry-tags" aria-label="Bird tags"><span>seabird</span><span>coastal</span></div>
-          </a>
-        </li>
-        <li class="entry" data-search="egret wader wetlands white bird fish shallow water" data-tags="waterbird,wader">
-          <a class="entry-link" href="bird.html?bird=egret">
-            <div class="entry-title"><h3>egret</h3><p class="latin">Ardeidae</p></div>
-            <div class="entry-tags" aria-label="Bird tags"><span>waterbird</span><span>wader</span></div>
           </a>
         </li>
         <li class="empty" id="no-results" hidden>No birds added so far match that search. Try another name or description.</li>
@@ -193,7 +169,7 @@
 
   <script>
     // Paste your Apps Script web app URL (ends in /exec) between the quotes.
-    // Until you do, or if the request fails, the five birds above stay on the page.
+    // The avocet entry stays on the page until the spreadsheet data loads.
     const API = "https://script.google.com/macros/s/AKfycbyA_y15KSXknYmJyD8NDQ0saOoCLEcHHI8toN9n9gFl1mjm1gQgc0feQM__s5cYJiEK/exec";
 
     const list = document.getElementById("bird-list");
@@ -205,13 +181,6 @@
       ["avocet", "assets/img/avocets.jpg"],
       ["cormorant", "assets/img/cormorants.jpg"]
     ]);
-    const defaultTags = new Map([
-      ["avocet", ["shorebird", "wader"]],
-      ["heron", ["waterbird", "wader"]],
-      ["cormorant", ["seabird", "diver"]],
-      ["tern", ["seabird", "coastal"]],
-      ["egret", ["waterbird", "wader"]]
-    ]);
 
     function photoKey(name) {
       return name.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -219,22 +188,11 @@
     }
 
     function birdTags(bird) {
-      const supplied = bird.tags ?? bird.category ?? bird.habitat ?? bird.type;
-      if (supplied) {
-        return (Array.isArray(supplied) ? supplied : String(supplied).split(/[;,|]/))
-          .map((tag) => String(tag).trim().toLowerCase()).filter(Boolean).slice(0, 3);
-      }
+      const supplied = bird.tags;
+      if (!supplied) return [];
 
-      const keywords = String(bird.keywords ?? "").toLowerCase();
-      const tagRules = [
-        ["waterfowl", /waterfowl|duck|goose|swan/],
-        ["seabird", /seabird|sea bird|coastal|coast|marine/],
-        ["shorebird", /shorebird|shore bird|shore|mudflat/],
-        ["wader", /wader|wetland|marsh|shallows|shallow water/],
-        ["raptor", /raptor|hawk|eagle|falcon|owl/]
-      ];
-      const inferred = tagRules.filter(([, pattern]) => pattern.test(keywords)).map(([tag]) => tag);
-      return inferred.length ? inferred.slice(0, 2) : defaultTags.get(photoKey(bird.name)) || ["bird"];
+      return (Array.isArray(supplied) ? supplied : String(supplied).split(","))
+        .map((tag) => String(tag).trim().toLowerCase()).filter(Boolean);
     }
 
     function prepareEntry(entry) {
@@ -334,7 +292,10 @@
 
     if (!API.startsWith("PASTE")) {
       fetch(API)
-        .then((res) => res.json())
+        .then((res) => {
+          if (!res.ok) throw new Error(`Bird data request failed with status ${res.status}`);
+          return res.json();
+        })
         .then((birds) => {
           if (!Array.isArray(birds) || birds.length === 0) return;
 
@@ -344,7 +305,7 @@
           entries = items;
           applyFilter();
         })
-        .catch(() => { /* keep the built-in list */ });
+        .catch((error) => console.error("Unable to load bird data from Apps Script.", error));
     }
   </script>
 </body>
