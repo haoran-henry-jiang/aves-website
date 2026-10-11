@@ -44,6 +44,20 @@
       text-decoration: none; border-bottom: 2px solid transparent;
     }
     .topbar nav a:hover, .topbar nav a[aria-current="page"] { border-bottom-color: var(--coral); }
+    .topbar nav a[href="development.html"] { position: relative; display: inline-block; }
+    .topbar nav a[href="development.html"]::after {
+      content: "Development"; position: absolute; inset: 0;
+      color: transparent; pointer-events: none;
+      background: linear-gradient(105deg, transparent 25%, rgba(239, 131, 84, .75) 38%, rgba(255, 224, 130, .8) 44%, rgba(175, 239, 192, .8) 50%, rgba(160, 211, 255, .8) 56%, rgba(216, 176, 255, .75) 62%, transparent 75%);
+      background-size: 250% 100%; background-position: 120% 0;
+      -webkit-background-clip: text; background-clip: text;
+      animation: nav-rainbow-glint 1.7s ease-out .4s both;
+    }
+    @keyframes nav-rainbow-glint {
+      0% { background-position: 120% 0; opacity: 0; }
+      20% { opacity: .95; }
+      100% { background-position: -20% 0; opacity: 0; }
+    }
     .hero {
       position: relative; display: flex; align-items: end;
       height: 100vh; height: 100svh;
@@ -158,6 +172,7 @@
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
+      .topbar nav a[href="development.html"]::after { animation: none; }
       *, *::before, *::after {
         animation-duration: .01ms !important; animation-iteration-count: 1 !important;
         transition-duration: .01ms !important; scroll-behavior: auto !important;
@@ -173,7 +188,7 @@
       <nav aria-label="Main navigation">
         <a href="index.html">About me</a>
         <a href="birds.html">Bird dictionary</a>
-        <a href="development.html" aria-current="page">Development</a>
+        <a href="development.html" aria-current="page" aria-label="Development">Development</a>
       </nav>
     </div>
     <div class="hero-copy">
@@ -203,7 +218,10 @@
               <li>Searching up components/ 3d printer design, to see how it works.</li>
             </ul>
           </div>
-          <figure class="timeline-photo" aria-label="Photo space for initial research and wiring"><span>Photo space</span></figure>
+          <figure class="timeline-photo">
+            <img src="https://drive.google.com/thumbnail?id=1_it3-Ut3Slso7MYNpRIRXAsrxSvLBMem&sz=`w1500" alt="breadboard circuitry!">
+            <figcaption>wait, can i feed this to a bird?</figcaption>
+          </figure>
         </li>
         <li class="milestone">
           <div class="milestone-copy">
@@ -214,7 +232,6 @@
               <li>Finalised the component list, see here:</li>
             </ul>
           </div>
-          <figure class="timeline-photo" aria-label="Photo space for prototype components"><span>Photo space</span></figure>
         </li>
         <li class="milestone">
           <div class="milestone-copy">
@@ -225,7 +242,6 @@
               <li>Decided to use lithium-ion for the prototype, with the possibility of creating a sodium-ion controller later.</li>
             </ul>
           </div>
-          <figure class="timeline-photo" aria-label="Photo space for battery planning"><span>Photo space</span></figure>
         </li>
         <li class="milestone">
           <div class="milestone-copy">
@@ -236,7 +252,10 @@
               <li>Software: Configured the ESP32 to display pictures on a local web server. It works really well, but the esp-32 is so freaking hot when it runs.</li>
             </ul>
           </div>
-          <figure class="timeline-photo" aria-label="Photo space for hardware and local image server testing"><span>Photo space</span></figure>
+          <figure class="timeline-photo">
+            <img src="https://drive.google.com/thumbnail?id=160oyuCCJSQdyQsi2K0fya3-iTxPb2cKt&amp;sz=`w1500" alt="breadboard circuitry!">
+            <figcaption>all of it on a glorious breadboard</figcaption>
+          </figure>
         </li>
         <li class="milestone">
           <div class="milestone-copy">
@@ -247,10 +266,6 @@
               <li>Hardware: Mr Ray and I soldered the TP4056 charge controller to the MT3068 step-up converter to provide stable 5V for the ESP32. I snapped off the solder connection when adjusting the output voltage (had to turn that tiny knob for ages), so I planned to meet with him again the next day. Gonna flash the ESP32 code in the meantime.</li>
             </ul>
           </div>
-          <figure class="timeline-photo">
-            <img src="https://drive.google.com/thumbnail?id=160oyuCCJSQdyQsi2K0fya3-iTxPb2cKt&amp;sz=`w1500" alt="breadboard circuitry!">
-            <figcaption>all of it on a glorious breadboard</figcaption>
-          </figure>
         </li>
         <li class="milestone" id="feeder">
           <div class="milestone-copy">

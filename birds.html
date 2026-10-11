@@ -41,6 +41,20 @@
       text-decoration: none; border-bottom: 2px solid transparent;
     }
     .topbar nav a:hover, .topbar nav a[aria-current="page"] { border-bottom-color: var(--coral); }
+    .topbar nav a[href="development.html"] { position: relative; display: inline-block; }
+    .topbar nav a[href="development.html"]::after {
+      content: "Development"; position: absolute; inset: 0;
+      color: transparent; pointer-events: none;
+      background: linear-gradient(105deg, transparent 25%, rgba(239, 131, 84, .75) 38%, rgba(255, 224, 130, .8) 44%, rgba(175, 239, 192, .8) 50%, rgba(160, 211, 255, .8) 56%, rgba(216, 176, 255, .75) 62%, transparent 75%);
+      background-size: 250% 100%; background-position: 120% 0;
+      -webkit-background-clip: text; background-clip: text;
+      animation: nav-rainbow-glint 1.7s ease-out .4s both;
+    }
+    @keyframes nav-rainbow-glint {
+      0% { background-position: 120% 0; opacity: 0; }
+      20% { opacity: .95; }
+      100% { background-position: -20% 0; opacity: 0; }
+    }
     .hero {
       position: relative; display: flex; align-items: end;
       min-height: 350px; height: 48svh; max-height: 560px;
@@ -104,13 +118,25 @@
       color: rgba(241, 250, 238, .74); font-size: .68rem; pointer-events: none;
     }
     .entry.has-photo .entry-placeholder { display: none; }
-    .entry:hover .entry-photo, .entry:focus-within .entry-photo, .entry.is-revealed .entry-photo { filter: blur(0) saturate(1); transform: scale(1); }
-    .entry:hover::after, .entry:focus-within::after, .entry.is-revealed::after { background: linear-gradient(135deg, rgba(51, 50, 50, .42), rgba(51, 50, 50, .12)); }
+    .entry:hover .entry-photo, .entry:focus-within .entry-photo { filter: blur(0) saturate(1); transform: scale(1); }
+    .entry:hover::after, .entry:focus-within::after { background: linear-gradient(135deg, rgba(51, 50, 50, .42), rgba(51, 50, 50, .12)); }
     .entry-title h3 { margin: 0; font-size: 1.55rem; font-weight: 600; }
     .entry-title .latin { margin: .1rem 0 0; color: rgba(241, 250, 238, .88); font-size: .95rem; font-style: italic; }
     .entry-tags { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .35rem; margin-left: auto; }
     .entry-tags span { color: rgba(241, 250, 238, .94); font-size: .85rem; font-style: italic; text-align: right; text-shadow: 0 1px 4px rgba(51, 50, 50, .7); }
     .empty { grid-column: 1 / -1; padding: 1rem 0; border-top: 1px solid var(--slate); }
+    .terms {
+      margin-top: 1rem; padding: 2rem; border-top: 4px solid var(--coral);
+      background: #e3eee7;
+    }
+    .terms-intro { max-width: 60ch; margin: .6rem 0 1.5rem; color: #465f63; }
+    .term-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; margin: 0; }
+    .term-list div { min-width: 0; padding: 1rem; background: rgba(255, 255, 255, .68); }
+    .term-list dt { display: flex; align-items: baseline; flex-wrap: wrap; gap: .15rem .55rem; }
+    .term-name { color: var(--graphite); font-size: 1.3rem; font-weight: 700; }
+    .pronunciation { color: #536b6f; font-size: .9rem; font-weight: 400; }
+    .part-of-speech { flex-basis: 100%; margin-top: .35rem; color: #78468f; font-size: .75rem; font-weight: 700; letter-spacing: .04em;  }
+    .term-list dd { margin: .45rem 0 0; }
     footer { padding: 1.25rem 0 2rem; border-top: 2px solid var(--slate); font-size: .9rem; }
     @media (max-width: 650px) {
       .topbar nav a { margin-left: .75rem; }
@@ -118,9 +144,15 @@
       .directory-head { align-items: stretch; flex-direction: column; gap: 1rem; }
       .search { width: 100%; }
       .entries { grid-template-columns: 1fr; }
+      .terms { padding: 1.25rem; }
+      .term-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .entry, .entry-link { min-height: 210px; }
     }
+    @media (max-width: 430px) {
+      .term-list { grid-template-columns: 1fr; }
+    }
     @media (prefers-reduced-motion: reduce) {
+      .topbar nav a[href="development.html"]::after { animation: none; }
       .entry-photo, .entry::after, .entry-definition { transition-duration: .01ms; }
     }
   </style>
@@ -133,12 +165,12 @@
       <nav aria-label="Main navigation">
         <a href="index.html">About me</a>
         <a href="birds.html" aria-current="page">Bird dictionary</a>
-        <a href="development.html">Development</a>
+        <a href="development.html" aria-label="Development">Development</a>
       </nav>
     </div>
     <div class="hero-copy">
       <h1>birds of jeju</h1>
-      <p>A field guide to the birds you might meet along the island's shores and wetlands.</p>
+      <p>Identification guide for birds native to Jeju island</p>
     </div>
     <p class="photo-credit">Photo by 오승목, 2023</p>
   </header>
@@ -148,7 +180,7 @@
       <div class="directory-head">
         <div>
           <h2 id="directory-title">bird dictionary</h2>
-          <p class="count" id="result-count" aria-live="polite">1 bird</p>
+          <p class="count" id="result-count" aria-live="polite">Loading birds…</p>
         </div>
         <div class="search">
           <label for="bird-search">Find a bird</label>
@@ -164,18 +196,29 @@
         <li class="empty" id="no-results" hidden>No birds added so far match that search. Try another name or description.</li>
       </ul>
     </section>
+    <section class="terms" aria-labelledby="terms-title">
+      <h2 id="terms-title">common terms</h2>
+      <p class="terms-intro">check it out</p>
+      <dl class="term-list" id="term-list">
+        <div>
+          <dt><span class="term-name">plumage</span><span class="pronunciation">[ploo-mij]</span><span class="part-of-speech">Noun</span></dt>
+          <dd>A bird’s feathers and their color or pattern.</dd>
+        </div>
+      </dl>
+    </section>
     <footer>Aves &copy; 2026</footer>
   </main>
 
   <script>
     // Paste your Apps Script web app URL (ends in /exec) between the quotes.
     // The avocet entry stays on the page until the spreadsheet data loads.
-    const API = "https://script.google.com/macros/s/AKfycbyA_y15KSXknYmJyD8NDQ0saOoCLEcHHI8toN9n9gFl1mjm1gQgc0feQM__s5cYJiEK/exec";
+    const API = "https://script.google.com/macros/s/AKfycbyDXen5GSBGZShFoAlzAUe6rZWT8fHyg0KTsbp8ioSBWew4ui--9-idlMw5tB3BaG4/exec";
 
     const list = document.getElementById("bird-list");
     const search = document.getElementById("bird-search");
     const count = document.getElementById("result-count");
     const empty = document.getElementById("no-results");
+    const termList = document.getElementById("term-list");
     let entries = [...document.querySelectorAll(".entry")];
     const defaultPhotos = new Map([
       ["avocet", "assets/img/avocets.jpg"],
@@ -195,6 +238,31 @@
         .map((tag) => String(tag).trim().toLowerCase()).filter(Boolean);
     }
 
+    function renderTerms(terms) {
+      const text = (value) => String(value ?? "").trim();
+      const items = terms.filter((term) => text(term.term) && text(term.definition)).map((term) => {
+        const item = document.createElement("div");
+        const heading = document.createElement("dt");
+        const name = document.createElement("span");
+        const pronunciation = document.createElement("span");
+        const partOfSpeech = document.createElement("span");
+        const definition = document.createElement("dd");
+
+        name.className = "term-name";
+        name.textContent = text(term.term);
+        pronunciation.className = "pronunciation";
+        pronunciation.textContent = text(term.pronunciation);
+        partOfSpeech.className = "part-of-speech";
+        partOfSpeech.textContent = text(term.part_of_speech);
+        heading.append(name, pronunciation, partOfSpeech);
+        definition.textContent = text(term.definition);
+        item.append(heading, definition);
+        return item;
+      });
+
+      if (items.length) termList.replaceChildren(...items);
+    }
+
     function prepareEntry(entry) {
       if (entry.querySelector(".entry-photo")) return;
 
@@ -207,14 +275,7 @@
       if (legacyPhoto) sources.push(legacyPhoto);
       let sourceIndex = 0;
 
-      const link = entry.querySelector(".entry-link");
-      if (link) {
-        link.href = `bird.html?bird=${encodeURIComponent(key)}`;
-        link.addEventListener("pointerenter", () => entry.classList.add("is-revealed"));
-        link.addEventListener("pointerleave", () => entry.classList.remove("is-revealed"));
-        link.addEventListener("focus", () => entry.classList.add("is-revealed"));
-        link.addEventListener("blur", () => entry.classList.remove("is-revealed"));
-      }
+      entry.querySelector(".entry-link").href = `bird.html?bird=${encodeURIComponent(key)}`;
 
       image.className = "entry-photo";
       image.alt = "";
@@ -296,8 +357,18 @@
           if (!res.ok) throw new Error(`Bird data request failed with status ${res.status}`);
           return res.json();
         })
-        .then((birds) => {
-          if (!Array.isArray(birds) || birds.length === 0) return;
+        .then((data) => {
+          const birds = Array.isArray(data) ? data : data?.birds;
+          const terms = Array.isArray(data) ? [] : data?.terms;
+          if (!Array.isArray(birds) || !Array.isArray(terms)) {
+            throw new Error("Apps Script response must contain birds and terms arrays.");
+          }
+          if (terms.length) renderTerms(terms);
+          if (birds.length === 0) {
+            applyFilter();
+            count.textContent = "No birds in the spreadsheet; showing the saved avocet entry.";
+            return;
+          }
 
           const items = birds.filter((b) => b.name).map(makeEntry);
           list.querySelectorAll(".entry").forEach((entry) => entry.remove());
@@ -305,7 +376,10 @@
           entries = items;
           applyFilter();
         })
-        .catch((error) => console.error("Unable to load bird data from Apps Script.", error));
+        .catch((error) => {
+          console.error("Unable to load bird data from Apps Script.", error);
+          count.textContent = "Could not load birds.";
+        });
     }
   </script>
 </body>

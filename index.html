@@ -51,6 +51,22 @@
     .brand { font-family: "BJCree", serif; font-size: 1.5rem; font-weight: 600; text-decoration: none; }
     .topbar nav a { margin-left: 1.5rem; text-decoration: none; border-bottom: 2px solid transparent; padding-block: .25rem; }
     .topbar nav a:hover { border-bottom-color: var(--coral); }
+    .topbar nav a[href="development.html"] {
+      position: relative; display: inline-block;
+    }
+    .topbar nav a[href="development.html"]::after {
+      content: "Development"; position: absolute; inset: 0;
+      color: transparent; pointer-events: none;
+      background: linear-gradient(105deg, transparent 25%, rgba(239, 131, 84, .75) 38%, rgba(255, 224, 130, .8) 44%, rgba(175, 239, 192, .8) 50%, rgba(160, 211, 255, .8) 56%, rgba(216, 176, 255, .75) 62%, transparent 75%);
+      background-size: 250% 100%; background-position: 120% 0;
+      -webkit-background-clip: text; background-clip: text;
+      animation: nav-rainbow-glint 1.7s ease-out .4s both;
+    }
+    @keyframes nav-rainbow-glint {
+      0% { background-position: 120% 0; opacity: 0; }
+      20% { opacity: .95; }
+      100% { background-position: -20% 0; opacity: 0; }
+    }
 
     /* Hero: the photo stays put while the intro slides up over it */
     .hero {
@@ -146,6 +162,7 @@
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
       .hero { position: relative; }
+      .topbar nav a[href="development.html"]::after { animation: none; }
       *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
     }
   </style>
@@ -158,7 +175,7 @@
     <nav aria-label="Main">
       <a href="#intro">About me</a>
       <a href="birds.html">Bird dictionary</a>
-      <a href="development.html">Development</a>
+      <a href="development.html" aria-label="Development">Development</a>
     </nav>
   </div>
 
@@ -166,7 +183,7 @@
     <img src="assets/img/avocets.jpg" alt="A pair of avocets swimming together" onerror="this.style.display='none'">
     <div class="hero-text" id="heroText">
       <h1>aves</h1>
-      <p class="tagline">Jeju bird observatory from the balcony of a student</p>
+      <p class="tagline">Jeju bird observatory from a balcony </p>
     </div>
     <a class="cue" href="#intro">Scroll to read</a>
     <p class="photo-credit"> Rajesh Balouria &copy;, 2026</p>
@@ -176,7 +193,7 @@
     <section id="intro" class="wrap">
       <h2>who am I?</h2>
       <div>
-        <p>I'm an amateur birdwatcher based in Jeju, Korea. i started birding to help me relax and take my mind off the adversity of everyday life.</p>
+        <p>I'm an amateur birdwatcher based in Jeju, Korea. i started birding to help me relax and take my mind off the adversity of everyday life. my name is Henry.</p>
         <p>Once, my friend and i were taking a walk and there was a bird on the side of the road, breathing heavily and trying to fly away in vain. it was hit by a car. 
           it back to my friend's house in my school bag, and we carefully transferred it to a cardboard box. we contacted the wildlife rescue center, and the bird was taken to the clinic. 
           we were later informed that the bird passed away while preparing for surgery due to a broken coracoid bone. from that day, i desired to contribute to protecting and preserving birds from the anthropogenic threats 

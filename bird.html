@@ -31,6 +31,20 @@
     .brand { font-family: "BJCree", serif; font-size: 1.5rem; font-weight: 600; text-decoration: none; }
     .topbar nav a { margin-left: 1.5rem; padding-block: .25rem; text-decoration: none; border-bottom: 2px solid transparent; }
     .topbar nav a:hover { border-bottom-color: var(--coral); }
+    .topbar nav a[href="development.html"] { position: relative; display: inline-block; }
+    .topbar nav a[href="development.html"]::after {
+      content: "Development"; position: absolute; inset: 0;
+      color: transparent; pointer-events: none;
+      background: linear-gradient(105deg, transparent 25%, rgba(239, 131, 84, .75) 38%, rgba(255, 224, 130, .8) 44%, rgba(175, 239, 192, .8) 50%, rgba(160, 211, 255, .8) 56%, rgba(216, 176, 255, .75) 62%, transparent 75%);
+      background-size: 250% 100%; background-position: 120% 0;
+      -webkit-background-clip: text; background-clip: text;
+      animation: nav-rainbow-glint 1.7s ease-out .4s both;
+    }
+    @keyframes nav-rainbow-glint {
+      0% { background-position: 120% 0; opacity: 0; }
+      20% { opacity: .95; }
+      100% { background-position: -20% 0; opacity: 0; }
+    }
     .bird-hero {
       position: relative; display: flex; align-items: end; min-height: 360px; height: 55svh; max-height: 620px;
       padding: 6rem max(1.25rem, calc((100% - 1100px) / 2)) 3rem;
@@ -58,6 +72,9 @@
       .bird-hero { min-height: 420px; height: 62svh; padding-bottom: 4rem; }
       .detail { padding-top: 2.5rem; }
     }
+    @media (prefers-reduced-motion: reduce) {
+      .topbar nav a[href="development.html"]::after { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -68,7 +85,7 @@
       <nav aria-label="Main navigation">
         <a href="index.html">About me</a>
         <a href="birds.html">Bird dictionary</a>
-        <a href="development.html">Development</a>
+        <a href="development.html" aria-label="Development">Development</a>
       </nav>
     </div>
     <div class="bird-heading">
@@ -90,7 +107,7 @@
     <footer>Aves &copy; 2026</footer>
   </main>
   <script>
-    const API = "https://script.google.com/macros/s/AKfycbyA_y15KSXknYmJyD8NDQ0saOoCLEcHHI8toN9n9gFl1mjm1gQgc0feQM__s5cYJiEK/exec";
+    const API = "https://script.google.com/macros/s/AKfycbyDXen5GSBGZShFoAlzAUe6rZWT8fHyg0KTsbp8ioSBWew4ui--9-idlMw5tB3BaG4/exec";
     const slug = new URLSearchParams(location.search).get("bird") || "";
     const normalize = (value) => String(value ?? "").normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "").toLowerCase().trim().replace(/[^a-z0-9]+/g, "-");
@@ -100,26 +117,6 @@
         description: "A long-legged shorebird that sweeps its fine, upturned bill through shallow water to find small prey.",
         tags: ["shorebird", "wader"]
       },
-      heron: {
-        name: "heron", scientific: "Ardeidae",
-        description: "A patient wader often seen standing still at the water's edge before striking quickly at fish.",
-        tags: ["waterbird", "wader"]
-      },
-      cormorant: {
-        name: "cormorant", scientific: "Phalacrocoracidae",
-        description: "A skilled diving fish-hunter, often seen perched by the water with its wings spread to dry.",
-        tags: ["seabird", "diver"]
-      },
-      tern: {
-        name: "tern", scientific: "Sterninae",
-        description: "A light-bodied seabird that hovers over the water before plunging in for small fish.",
-        tags: ["seabird", "coastal"]
-      },
-      egret: {
-        name: "egret", scientific: "Ardeidae",
-        description: "A graceful white wader that feeds in shallow water, taking small fish and other aquatic prey.",
-        tags: ["waterbird", "wader"]
-      }
     };
     const defaultPhotos = {
       avocet: "assets/img/avocets.jpg",
@@ -174,8 +171,9 @@
         return response.json();
       })
       .then((birds) => {
-        if (!Array.isArray(birds)) return;
-        const bird = birds.find((item) => normalize(item.name) === normalize(slug));
+        const birdList = Array.isArray(birds) ? birds : birds?.birds;
+        if (!Array.isArray(birdList)) return;
+        const bird = birdList.find((item) => normalize(item.name) === normalize(slug));
         if (bird) renderBird({ ...localBird, ...bird });
         else if (!localBird) {
           nameNode.textContent = "bird not found";
